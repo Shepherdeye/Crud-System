@@ -72,13 +72,13 @@ SearchInput.onkeyup = function () {
     // console.log(SearchInput.value)
     let result = "";
     for (let i = 0; i < allProduct.length; i++) {
-        if (allProduct[i].ProName.toLowerCase().includes(this.value)) {
+        if (allProduct[i].ProName.includes(this.value)) {
             result += `
             
             
             <tr>
             <td>${i + 1}</td>
-            <td>${allProduct[i].ProName.replace(`${this.value}`, `<span style="background-color: yellow;">${this.value}</span>`)}</td>
+            <td>${allProduct[i].ProName.replace(`${this.value}`, `<span style="color: red; font-weight: bolder;">${this.value}</span>`)}</td>
             <td>${allProduct[i].proCategory}</td>
             <td>${allProduct[i].proPrice}</td>
             <td>${allProduct[i].proDescription}</td>
