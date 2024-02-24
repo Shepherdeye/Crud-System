@@ -1,68 +1,82 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>Crud System</title>
 </head>
+
 <body>
-   
-    <div class=" container w-75 form-group border shadow p-5">
-        <h1> Crud system</h1>
-        <div>
-            <label> Product name:</label>
-            <input type="text" class=" form-control " maxlength="15" id="name">
-            <div class="alert alert-danger text-capitalize d-none" id="alert" role="alert">
-                <strong>you should enter capital letter</strong>
+
+    <div class="container">
+        <h1> Crud </h1>
+
+        <div class="form">
+            <label for="">Name</label>
+            <input class=" form-control " type="text" name="" id="productName">
+            <div class="alert alert-danger d-none" id="alertName">
+                <strong> start with Capital and minmum 3 letters</strong>
+            </div>
+
+            <label for=""> Category</label>
+            <input class=" form-control" type="text" name="" id="productCategory">
+            <div class="alert alert-danger d-none" id="alertCategory">
+                <strong> start with Capital and minmum 3 letters</strong>
+            </div>
+            <label for="">Price</label>
+            <input class=" form-control" type="number" name="" id="productPrice">
+            <div class="alert alert-danger d-none" id="alertPrice">
+                <strong> minmum 100$ and maxmum 10000$</strong>
             </div>
         </div>
-        <div>
-            <label> Product category:</label>
-            <input type="text" class=" form-control" id="category">
+        <label for=""> Description</label>
+        <input class=" form-control" type="text" name="" id="productDescription">
+        <div class="alert alert-danger d-none" id="alertDescription">
+            <strong> maxmum letters 40 letters</strong>
+
+            <br>
+            <br>
+
         </div>
-        <div>
-            <label> Product price:</label>
-            <input type="number" class=" form-control" id="price">
-        </div>
-        <div>
-            <label> Product description:</label>
-            <input type="text" class=" form-control" id="description">
-        </div>
-    
-        <button class=" btn btn-info mt-2"  id="button" onclick=" addprouduct()"> add product</button>
+        <button id="add" onclick=addProduct() class="btn btn-info my-3 "> Add</button>
+
+
+        <input type="search" name="" class=" w-50 form-control m-auto my-5" id="search" placeholder="Seach...">
+
+        <br>
+        <br>
+        <table class="w-75 m-auto my-5  table-striped ">
+            <thead>
+                <th>index</th>
+                <th>Name</th>
+                <th>Category </th>
+                <th>Price</th>
+                <th> Description</th>
+                <th> Delete</th>
+                <th> Update</th>
+            </thead>
+            <tbody id="tbody">
+
+
+
+            </tbody>
+        </table>
+
     </div>
 
 
-    <!-- search input -->   
-<input type="search" class=" form-control w-25 m-auto mb-2" id="search" placeholder="search">
-<br>
-    <!--table -->
-   <table class="table table-striped table-inverse border shadow  w-75  m-auto text-center ">
-       <thead class="thead-inverse w-100">
-           <tr>
-               <th>Id</th>
-               <th>Name</th>
-               <th>Category</th>
-               <th>Price</th>
-               <th>Description</th>
-               <th>Delete</th>
-               <th>Update</th>
-           </tr>
-           </thead>
-           <tbody id="tableb" class="thead-inverse w-100" style="font-family: cursive;">
-      
-           </tbody>
-   </table>
 
-   
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/brain.js"></script>
+
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/brain.js"></script>
+
+
 </body>
 
 </html>
