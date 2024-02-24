@@ -1,175 +1,290 @@
-﻿var nameInp=document.getElementById("name"),
-    CategoryInp=document.getElementById("category"),
-    PriceInp=document.getElementById("price"),
-    myButton=document.getElementById("button"),
-    mySearch=document.getElementById("search"),
-    DesciptionInp=document.getElementById("description");
+let productName = document.getElementById("productName"),
+    productCategory = document.getElementById("productCategory"),
+    productPrice = document.getElementById("productPrice"),
+    productDescription = document.getElementById("productDescription");
 
-    // كان لازم نعمل دالة اف عشان لو فبداية  الموقع اللوكال  ستوراج كانت فاضيه هتجيب خطا 
-    if(localStorage.getItem("crudData")==null){
-        var myDataSaver=[];
-    }else{
+// localStorage.clear("Data");
+if (localStorage.getItem("Data") == null) {
+    var allProduct = [];
+
+} else {
+    allProduct = JSON.parse(localStorage.getItem("Data"));
+
+}
+
+
+
+function addProduct() {
+    // alert("sayed")
+    if (validateInput() == true &&
+        validateCategory() == true &&
+        validatePrice() == true &&
+        validateDescription() == true) {
+
+        let addprodoj = {
+            ProName: productName.value,
+            proCategory: productCategory.value,
+            proPrice: productPrice.value,
+            proDescription: productDescription.value
+        }
+
+        allProduct.push(addprodoj);
+
+        localStorage.setItem("Data", JSON.stringify(allProduct));
+        // console.log(allProduct);
+        displayProduct();
+
+        ClearValue()
+        removeValidStyle()
+    }
+}
+
+let tbody = document.getElementById("tbody");
+
+function displayProduct() {
+    let displayTable = "";
+    for (let i = 0; i < allProduct.length; i++) {
+        displayTable += `
         
-    // هنا لما جينا نرجع البيانات المحفوظه فالوكال ستوراج كان لازم نحولها  من سترنج لاراي 
-    var myDataSaver=JSON.parse(localStorage.getItem("crudData")) ;
-
-    }
-    
-
-
-    //بنادي  الفنكشن عشان مش  كل  شويه نضغط علي  الزرار عشان نعرض الداتا 
-    displayData();
-
-   function addprouduct(){
-        "use strict";
-    if(validatePruduct()==true && nameInp.value!="" &&CategoryInp.value!="" && PriceInp.value!="" && DesciptionInp!=""){
-      var myInfo={
-        name: nameInp.value,
-        category: CategoryInp.value,
-        price:  PriceInp.value,
-        description: DesciptionInp.value,
-    }
-    myDataSaver.push(myInfo);
-
-    //هنا لازم القيمه بتاعت الكي اللي فاللوكال ستوراج تبقي سترنج علشا كده حولناها لسترينج 
-    //اهمية الخطوه دي  ان اللي  هعمله هيحفظ ودي بتحفظ اي حاجه انا بعملها بس  
-    localStorage.setItem("crudData",JSON.stringify(myDataSaver))
-
-  // //   console.log(myDataSaver)
-    displayData();
-    clearInputs();
-  }
+        <tr>
+        <td>${i + 1}</td>
+        <td>${allProduct[i].ProName}</td>
+        <td>${allProduct[i].proCategory}</td>
+        <td>${allProduct[i].proPrice}</td>
+        <td>${allProduct[i].proDescription}</td>
+        <td><button onclick=deleteProduct(${i}) class=" btn btn-danger ">Delete</button> </td>
+        <td><button onclick=updateProduct(${i})  class="btn btn-warning ">Update</button> </td>
+    </tr>
+        
+        
+        `
     }
 
+    tbody.innerHTML = displayTable;
 
+}
+displayProduct();
 
-    function displayData(){
-        "use strict";
-        var tbody="";
-        for( var i=0;i<myDataSaver.length;i++){
-            tbody+=` <tr>
-            <td scope="row">${i}</td>
-            <td>${myDataSaver[i].name}</td>
-            <td>${myDataSaver[i].category}</td>
-            <td>${myDataSaver[i].price}</td>
-            <td>${myDataSaver[i].description}</td>
-            <td> <button onclick="deleteRow(${i})" class=" btn bg-danger text-white"> Delete</button></td>
-            <td> <button onclick="updatedRow(${i})" class=" btn bg-warning"> Update</button></td>
-            </tr>`
-        }
+// Search Function
+let SearchInput = document.getElementById("search");
 
-        document.getElementById("tableb").innerHTML = tbody;
-        // console.log(tbody)
-    }
-
-
-  function deleteRow(x){
-      "use strict";
-    //   alert(x)
-    myDataSaver.splice(x,1)
-    localStorage.setItem("crudData",JSON.stringify(myDataSaver))
-    displayData()
-  }
-  //خنا الداله مستخدمنها عشان البحث  
-  mySearch.onkeyup=function(){
-
-      // المتغير ده انا حاطه عشان لما ابدا  البحث  المربع يفضي 
-      var trs="";
-
-      // عملت لوب  عشان يبحثلي  فكل  العناصر  الموجوده فالاراي  الاساسيه 
-    for(var i=0 ; i< myDataSaver.length; i++){
-
-        // استخدمت الداله عشان خاطر  ابحث بالاسم بس 
-        // استخدمت دالة  عشان يعرض حروف الاسم سمول  والقيمه اللي  فالبحث  تبقي  هي  كمان سمول  عشان حساسية  الحروف 
-        if(myDataSaver[i].name.toLowerCase().includes(mySearch.value.toLowerCase())){
-
-            //هنا متخفش  من شكل  الكود لان هو  عباره عن كود داخلي  محطوط ف سترينج 
-            trs +=` <tr>
-            <td scope="row">${i}</td>
+SearchInput.onkeyup = function () {
+    // console.log(SearchInput.value)
+    let result = "";
+    for (let i = 0; i < allProduct.length; i++) {
+        if (allProduct[i].ProName.toLowerCase().includes(this.value)) {
+            result += `
             
-            <td>${myDataSaver[i].name.toLowerCase().replace(`${mySearch.value.toLowerCase()}`,`
-             <span style="background-color: yellow;"> ${mySearch.value}</span>`)}</td>
+            
+            <tr>
+            <td>${i + 1}</td>
+            <td>${allProduct[i].ProName.replace(`${this.value}`, `<span style="background-color: yellow;">${this.value}</span>`)}</td>
+            <td>${allProduct[i].proCategory}</td>
+            <td>${allProduct[i].proPrice}</td>
+            <td>${allProduct[i].proDescription}</td>
+            <td><button onclick=deleteProduct(${i}) class=" btn btn-danger ">Delete</button> </td>
+            <td><button onclick=updateProduct(${i})  class="btn btn-warning ">Update</button> </td>
+        </tr>
+            
+            
+            
+            `
 
-            <td>${myDataSaver[i].category}</td>
-            <td>${myDataSaver[i].price}</td>
-            <td>${myDataSaver[i].description}</td>
-            <td> <button onclick="deleteRow(${i})" class=" btn bg-danger text-white"> Delete</button></td>
-            <td> <button class=" btn bg-warning"> Update</button></td>
-            </tr>`
-        //  console.log("yes")
 
-        }else{
 
-            // console.log("no")
+        } else {
+            // console.log('no');
         }
+
+        tbody.innerHTML = result;
+
+
+
     }
-    // عشان يجبلي  اللي ببحث  عنه بس (html) هنا  انا  حطيت الاسترينج داخل 
-
-    document.getElementById("tableb").innerHTML= trs;
-  }
-
-
-  function updatedRow(index){
-  nameInp.value= myDataSaver[index].name;
-  CategoryInp.value= myDataSaver[index].category;
-  PriceInp.value= myDataSaver[index].price;
-  DesciptionInp.value= myDataSaver[index].description;
-
-  myButton.innerHTML="update product";
-  myButton.classList.add("btn-warning");
-
- nameInp.focus();
-
-  myButton.onclick=function(){
-
-    myDataSaver[index].name= nameInp.value;
-    myDataSaver[index].category=CategoryInp.value;
-    myDataSaver[index].price=PriceInp.value;
-    myDataSaver[index].description=DesciptionInp.value;
-    //بنحفظ التعديلات فاللوكال ستوراج
-    localStorage.setItem("crudData",JSON.stringify(myDataSaver));
-    //بنعرض التغيرات اللي  حصلت 
-    displayData();
-    clearInputs();
-    myButton.innerHTML="add product";
-    myButton.classList.remove("btn-warning");
-    //مهم جدا لان الخطوه دي  احنا بيها هنرجع الداله الاساسيه تاني
-    myButton.onclick= addprouduct;
-  }
- 
-  }
 
 
 
-  function clearInputs(){
-    nameInp.value="";
-    CategoryInp.value="";
-    PriceInp.value="";
-    description.value="";
 
-  }
 
-  var alertx=document.getElementById("alert");
-  // validation function
-  function validatePruduct(){
+}
 
-    var regularex=/^[A-Z][A-Za-z 0-9]{3,15}$/;
-    var valiedInp = nameInp.value;
 
-    if( regularex.test(valiedInp) ){
-      
-    
-      nameInp.classList.remove("is-invalid");
-      nameInp.classList.add("is-valid");
-      alertx.classList.add("d-none");
-      return true;
-    }else{
-      nameInp.classList.remove("is-valid");
-      nameInp.classList.add("is-invalid");
-      
-      alertx.classList.remove("d-none");
-      return false;
+//delefunction
+
+function deleteProduct(index) {
+    // alert("hello")
+
+    allProduct.splice(index, 1);
+
+    localStorage.setItem("Data", JSON.stringify(allProduct));
+    displayProduct()
+
+}
+
+let addBtn = document.getElementById("add");
+
+// Update Function
+function updateProduct(index) {
+
+    productName.value = allProduct[index].ProName
+
+    productCategory.value = allProduct[index].proCategory
+    productPrice.value = allProduct[index].proPrice
+    productDescription.value = allProduct[index].proDescription
+    addBtn.innerHTML = "Update";
+    addBtn.onclick = function () {
+
+        allProduct[index].ProName = productName.value;
+        allProduct[index].proCategory = productCategory.value;
+        allProduct[index].proPrice = productPrice.value;
+        allProduct[index].proDescription = productDescription.value;
+        addBtn.innerHTML = "Add";
+        localStorage.setItem("Data", JSON.stringify(allProduct));
+        removeValidStyle();
+        ClearValue();
+      displayProduct();
+
+
+
     }
-  }
-nameInp.addEventListener("keyup",validatePruduct);
-CategoryInp.addEventListener("keyup",validatePruduct);
+
+
+};
+
+
+// clear  value 
+function ClearValue() {
+
+
+
+    productName.value = '';
+    productCategory.value = '';
+    productPrice.value = '';
+    productDescription.value = '';
+
+
+
+
+
+}
+// function to  validate the  products
+let alertName = document.getElementById("alertName");
+
+
+function validateInput() {
+    // name input validate
+    var nammeRegex = /^[A-Z][a-z 0-9]{2,15}$/;
+    let namevalidate = productName.value;
+
+
+
+    if (nammeRegex.test(namevalidate)) {
+        // console.log("yes");
+        productName.classList.add("is-valid");
+        productName.classList.remove("is-invalid");
+        alertName.classList.add("d-none");
+        // addBtn.removeAttribute("disabled");
+
+
+
+
+        return true;
+
+
+    } else {
+        // console.log("no");
+        productName.classList.add("is-invalid");
+        productName.classList.remove("is-valid");
+        alertName.classList.remove("d-none");
+        // addBtn.setAttribute("disabled", "true");
+        return false;
+
+
+
+
+
+
+    }
+
+
+};
+// document.addEventListener("keyup", validateInput);
+
+productName.addEventListener("keyup", validateInput);
+
+
+
+// category validation 
+let alertCategory = document.getElementById("alertCategory");
+
+function validateCategory() {
+    // name input validate
+    var categoryRegex = /^[A-Z][a-z 0-9]{2,15}$/;
+    let categoryvalidate = productCategory.value;
+    if (categoryRegex.test(categoryvalidate)) {
+        productCategory.classList.add("is-valid");
+        productCategory.classList.remove("is-invalid");
+        alertCategory.classList.add("d-none");
+        return true;
+    } else {
+        productCategory.classList.remove("is-valid");
+        productCategory.classList.add("is-invalid");
+        alertCategory.classList.remove("d-none");
+        return false;
+    }
+}
+productCategory.addEventListener("keyup", validateCategory);
+
+
+// Price validation 
+let alertPrice = document.getElementById("alertPrice");
+
+function validatePrice() {
+    // name input validate
+    var priceRegex = /^(?:[1-9][0-9]{2,3}|10000)$/;
+    let pricevalidate = productPrice.value;
+    if (priceRegex.test(pricevalidate)) {
+        productPrice.classList.add("is-valid");
+        productPrice.classList.remove("is-invalid");
+        alertPrice.classList.add("d-none");
+        return true;
+    } else {
+        productPrice.classList.remove("is-valid");
+        productPrice.classList.add("is-invalid");
+        alertPrice.classList.remove("d-none");
+        return false;
+    }
+}
+productPrice.addEventListener("keyup", validatePrice);
+
+
+// Description validation 
+let alertDescription = document.getElementById("alertDescription");
+
+function validateDescription() {
+    // name input validate
+    var DescriptionRegex = /^[A-Z][a-z 0-9]{2,40}$/;
+    let Descriptionvalidate = productDescription.value;
+    if (DescriptionRegex.test(Descriptionvalidate)) {
+        productDescription.classList.add("is-valid");
+        productDescription.classList.remove("is-invalid");
+        alertDescription.classList.add("d-none");
+        return true;
+    } else {
+        productDescription.classList.remove("is-valid");
+        productDescription.classList.add("is-invalid");
+        alertDescription.classList.remove("d-none");
+        return false;
+    }
+}
+productDescription.addEventListener("keyup", validateDescription);
+
+// remove  style  after validation 
+function removeValidStyle(){
+    productName.classList.remove("is-valid");
+    productCategory.classList.remove("is-valid");
+    productPrice.classList.remove("is-valid");
+    productDescription.classList.remove("is-valid");
+   
+
+}
